@@ -28,7 +28,6 @@ provider:
   environment:
     MY_CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}
     MY_CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
-
 iamRoleStatements:
     - Effect: Allow
       Action:
@@ -37,6 +36,26 @@ iamRoleStatements:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "*"
+resources:
+  Resources:
+    CandidatesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.CANDIDATE_TABLE}
 
 
 # you can add statements to the Lambda function's IAM Role here
