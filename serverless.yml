@@ -24,9 +24,20 @@ provider:
   name: aws
   runtime: nodejs18.x
   stage: dev
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  region: us-east-1
+  environment:
+    MY_CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    MY_CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
+
+iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
