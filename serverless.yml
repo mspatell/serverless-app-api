@@ -23,7 +23,7 @@ frameworkVersion: "3"
 provider:
   name: aws
   runtime: nodejs18.x
-
+  stage: dev
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
