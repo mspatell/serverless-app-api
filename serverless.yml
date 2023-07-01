@@ -26,9 +26,9 @@ provider:
   stage: dev
   region: us-east-1
   environment:
-    MY_CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}
-    MY_CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
-iamRoleStatements:
+    CANDIDATE_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
+  iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:Query
@@ -36,19 +36,18 @@ iamRoleStatements:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "*"
+
 resources:
   Resources:
     CandidatesDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
+      Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: "id"
-            AttributeType: "S"   
+          - AttributeName: "id"
+            AttributeType: "S"
         KeySchema:
-          -
-            AttributeName: "id"
+          - AttributeName: "id"
             KeyType: "HASH"
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -56,7 +55,6 @@ resources:
         StreamSpecification:
           StreamViewType: "NEW_AND_OLD_IMAGES"
         TableName: ${self:provider.environment.CANDIDATE_TABLE}
-
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -92,34 +90,39 @@ functions:
   hello:
     handler: handler.hello
     events:
-     - http:
-         path: /users/hello
-         method: get
+      - http:
+          path: /users/hello
+          method: get
   create:
     handler: handler.create
     events:
-     - http:
-         path: /users/create
-         method: post
+      - http:
+          path: /users/create
+          method: post
   read:
     handler: handler.read
     events:
-     - http:
-         path: /users/read
-         method: get
+      - http:
+          path: /users/read
+          method: get
   update:
     handler: handler.update
     events:
-     - http:
-         path: /users/update
-         method: put
+      - http:
+          path: /users/update
+          method: put
   delete:
     handler: handler.delete
     events:
+      - http:
+          path: /users/delete
+          method: delete
+  submit:
+    handler: handler.submit
+    events:
      - http:
-         path: /users/delete
-         method: delete
-
+         path: /users/submit
+         method: post
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
