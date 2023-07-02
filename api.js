@@ -14,11 +14,12 @@ const getNote = async (event) => {
     try {
         const params = {
             TableName: process.env.DYNAMODB_TABLE_NAME,
-            Key: marshall({ postId: event.pathParameters.noteId }),
+            Key: marshall({ noteId: event.pathParameters.noteId }),
         };
         const { Item } = await db.send(new GetItemCommand(params));
 
         console.log({ Item });
+        console.log("checking ci/cd pipeline");
         response.body = JSON.stringify({
             message: "Successfully retrieved note.",
             data: (Item) ? unmarshall(Item) : {},
@@ -73,7 +74,7 @@ const updateNote = async (event) => {
         const objKeys = Object.keys(body);
         const params = {
             TableName: process.env.DYNAMODB_TABLE_NAME,
-            Key: marshall({ postId: event.pathParameters.postId }),
+            Key: marshall({ noteId: event.pathParameters.noteId }),
             UpdateExpression: `SET ${objKeys.map((_, index) => `#key${index} = :value${index}`).join(", ")}`,
             ExpressionAttributeNames: objKeys.reduce((acc, key, index) => ({
                 ...acc,
@@ -109,7 +110,7 @@ const deleteNote = async (event) => {
     try {
         const params = {
             TableName: process.env.DYNAMODB_TABLE_NAME,
-            Key: marshall({ postId: event.pathParameters.postId }),
+            Key: marshall({ noteId: event.pathParameters.noteId }),
         };
         const deleteResult = await db.send(new DeleteItemCommand(params));
 
