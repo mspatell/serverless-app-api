@@ -19,7 +19,7 @@ const getNote = async (event) => {
         const { Item } = await db.send(new GetItemCommand(params));
 
         console.log({ Item });
-        console.log("checking ci/cd pipeline");
+        console.log("ci/cd check 2");
         response.body = JSON.stringify({
             message: "Successfully retrieved note.",
             data: (Item) ? unmarshall(Item) : {},

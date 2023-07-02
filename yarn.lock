@@ -65,7 +65,7 @@
     "@aws-sdk/util-utf8-browser" "^3.0.0"
     tslib "^1.11.1"
 
-"@aws-sdk/client-dynamodb@^3.363.0":
+"@aws-sdk/client-dynamodb@^3.18.0":
   version "3.363.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-dynamodb/-/client-dynamodb-3.363.0.tgz#424d7c45cce51ec87ff860b562429f697d9c12a9"
   integrity sha512-RkO3CfnFjbd40pco81ucmbuF4ZMLGgPfssjmZRClb4bqysH0MB7GAf/hC54aVEzrXqTP2SMjCaLpoRiv8Qngsg==
@@ -409,7 +409,7 @@
   dependencies:
     tslib "^2.5.0"
 
-"@aws-sdk/util-dynamodb@^3.363.0":
+"@aws-sdk/util-dynamodb@^3.18.0":
   version "3.363.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-dynamodb/-/util-dynamodb-3.363.0.tgz#3732bc512077236c659447ffdb13e4cc14faadc9"
   integrity sha512-zzY2PnNFxqJYIrbd/C2VMWhPMWP+XQG4C/V/yEfU2LY+HNAZ0aJPUwvXnMJTumZjcfYr+20qRiowsw8dnXEVgA==
