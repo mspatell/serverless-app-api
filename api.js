@@ -126,22 +126,63 @@ const updateNote = async (event) => {
   return response;
 };
 
+// const deleteNote = async (event) => {
+//   const response = { statusCode: 200 };
+
+//   try {
+//     const params = {
+//       TableName: process.env.DYNAMODB_TABLE_NAME, //table name
+//       Key: marshall({ noteId: event.pathParameters.noteId }), // The primary key value to identify the note to delete
+//     };
+//     const deleteResult = await db.send(new DeleteItemCommand(params)); // Perform the delete operation in DynamoDB
+
+//     response.body = JSON.stringify({
+//       message: "Successfully deleted note.",
+//       deleteResult, // Result of the delete operation
+//     });
+//   } catch (e) {
+//     console.error(e); // Prepare the error response in case of failure
+//     response.statusCode = 500;
+//     response.body = JSON.stringify({
+//       message: "Failed to delete note.",
+//       errorMsg: e.message,
+//       errorStack: e.stack,
+//     });
+//   }
+
+//   return response;
+// };
+
 const deleteNote = async (event) => {
   const response = { statusCode: 200 };
 
   try {
+    const noteId = event.pathParameters.noteId;
     const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME, //table name
-      Key: marshall({ noteId: event.pathParameters.noteId }), // The primary key value to identify the note to delete
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Key: marshall({ noteId: event.pathParameters.noteId }),// The primary key value to identify the note to delete
     };
-    const deleteResult = await db.send(new DeleteItemCommand(params)); // Perform the delete operation in DynamoDB
 
-    response.body = JSON.stringify({
-      message: "Successfully deleted note.",
-      deleteResult, // Result of the delete operation
-    });
+    // Check if the note exists in the database
+    const getResult = await db.send(new GetItemCommand(params));
+
+    if (!getResult.Item) {
+      // Note does not exist
+      response.statusCode = 404;
+      response.body = JSON.stringify({
+        message: "No note found with the provided noteId.",
+      });
+    } else {
+      // Note exists, perform the delete operation
+      const deleteResult = await db.send(new DeleteItemCommand(params));
+
+      response.body = JSON.stringify({
+        message: "Successfully deleted note.",
+        deleteResult, // Result of the delete operation
+      });
+    }
   } catch (e) {
-    console.error(e); // Prepare the error response in case of failure
+    console.error(e);
     response.statusCode = 500;
     response.body = JSON.stringify({
       message: "Failed to delete note.",
@@ -152,6 +193,8 @@ const deleteNote = async (event) => {
 
   return response;
 };
+
+
 
 //Function to scan entire table and fetch all notes
 const getAllNotes = async () => {

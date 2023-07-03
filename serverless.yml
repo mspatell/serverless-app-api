@@ -69,6 +69,7 @@ functions:
     iamRoleStatements:
       - Effect: "Allow"
         Action:
+          - "dynamodb:GetItem"
           - "dynamodb:DeleteItem"
         Resource: !GetAtt NotesTable.Arn
   getAllNotes:
