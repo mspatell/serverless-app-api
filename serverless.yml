@@ -1,4 +1,4 @@
-service: serverless-notes-app-api
+service: serverless-notes-app-api-prod
 
 provider:
   name: aws
