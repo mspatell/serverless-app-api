@@ -17,7 +17,7 @@ plugins:
 functions:
   getNote:
     handler: api.getNote
-    name: get-note
+    name: get-note-prod
     memorySize: 128 # mb
     timeout: 10 # seconds
     events:
@@ -31,7 +31,7 @@ functions:
         Resource: !GetAtt NotesTable.Arn
   createNote:
     handler: api.createNote
-    name: create-note
+    name: create-note-prod
     memorySize: 128 # mb
     timeout: 10 # seconds
     events:
@@ -45,7 +45,7 @@ functions:
         Resource: !GetAtt NotesTable.Arn
   updateNote:
     handler: api.updateNote
-    name: update-note
+    name: update-note-prod
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
@@ -59,7 +59,7 @@ functions:
         Resource: !GetAtt NotesTable.Arn
   deleteNote:
     handler: api.deleteNote
-    name: delete-note
+    name: delete-note-prod
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
@@ -73,7 +73,7 @@ functions:
         Resource: !GetAtt NotesTable.Arn
   getAllNotes:
     handler: api.getAllNotes
-    name: get-all-notes
+    name: get-all-notes-prod
     memorySize: 128 # mb
     timeout: 5 # seconds
     events:
