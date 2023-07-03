@@ -3,7 +3,7 @@ service: serverless-notes-app-api
 provider:
   name: aws
   runtime: nodejs14.x
-  stage: prod
+  stage: dev
   region: us-east-1
   environment:
     DYNAMODB_TABLE_NAME: ${self:custom.notesTableName}

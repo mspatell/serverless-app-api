@@ -2,7 +2,7 @@ name: Deploy NotesApp CRUD API
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
