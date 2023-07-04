@@ -8,6 +8,88 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
+
+// Function to create a new note
+// const createNote = async (event) => {
+// const response = { statusCode: 200 };
+
+//     try {
+//         const body = JSON.parse(event.body);
+//         const params = {
+//             TableName: process.env.DYNAMODB_TABLE_NAME,
+//             Item: marshall(body || {}),
+//         };
+//         const createResult = await db.send(new PutItemCommand(params));
+
+//         response.body = JSON.stringify({
+//             message: "Successfully created note.",
+//             createResult,
+//         });
+//     } catch (e) {
+//         console.error(e);
+//         response.statusCode = 500;
+//         response.body = JSON.stringify({
+//             message: "Failed to create note.",
+//             errorMsg: e.message,
+//             errorStack: e.stack,
+//         });
+//     }
+
+//     return response;
+// };
+
+const createNote = async (event) => {
+  const response = { statusCode: 200 };
+
+  try {
+    const body = JSON.parse(event.body);
+    const noteId = body.noteId;
+
+    if (!noteId) {
+      response.statusCode = 400;
+      response.body = JSON.stringify({
+        message: "Missing noteId in the request body.",
+      });
+      return response;
+    }
+
+    const params = {
+      TableName: process.env.DYNAMODB_TABLE_NAME,
+      Key: marshall({ noteId }),
+    };
+
+    const getResult = await db.send(new GetItemCommand(params));
+
+    if (getResult.Item) {
+      response.body = JSON.stringify({
+        message: "A note with the same noteId already exists. Please create new note with UNIQUE 'noteId'",
+      });
+    } else {
+      const createResult = await db.send(
+        new PutItemCommand({
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Item: marshall(body),
+        })
+      );
+
+      response.body = JSON.stringify({
+        message: "Successfully created note.",
+        createResult,
+      });
+    }
+  } catch (e) {
+    console.error(e);
+    response.statusCode = 500;
+    response.body = JSON.stringify({
+      message: "Failed to create note.",
+      errorMsg: e.message,
+      errorStack: e.stack,
+    });
+  }
+
+  return response;
+};
+
 // Function to retrieve a note by noteId
 const getNote = async (event) => {
   const response = { statusCode: 200 };
@@ -17,17 +99,26 @@ const getNote = async (event) => {
       TableName: process.env.DYNAMODB_TABLE_NAME,
       Key: marshall({ noteId: event.pathParameters.noteId }),
     };
-    const { Item } = await db.send(new GetItemCommand(params));
+    // Check if the note exists in the database
+    const getResult = await db.send(new GetItemCommand(params));
 
-    console.log({ Item });
-    console.log("ci/cd check 2");
+    if (!getResult.Item) {
+      // Note does not exist
+      // Note exists, perform the retrival operation
+      response.body = JSON.stringify({
+        message: "No note available in the database with ${noteId} id.",
+      });
+    } else {
+      const { Item } = await db.send(new GetItemCommand(params));
 
-    // Prepare the response body with retrieved note details
-    response.body = JSON.stringify({
-      message: "Successfully retrieved note.",
-      data: Item ? unmarshall(Item) : {},
-      rawData: Item,
-    });
+      console.log({ Item });
+      console.log("ci/cd check 2");
+      response.body = JSON.stringify({
+        message: "Successfully retrieved note.",
+        data: Item ? unmarshall(Item) : {},
+        rawData: Item,
+      });
+    }
   } catch (e) {
     console.error(e); // Prepare the error response in case of failure
     response.statusCode = 500;
@@ -41,117 +132,43 @@ const getNote = async (event) => {
   return response;
 };
 
-// Function to create a new note
-const createNote = async (event) => {
-  const response = { statusCode: 200 };
-
-  try {
-    const body = JSON.parse(event.body);
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME,
-      Item: marshall(body || {}),
-    };
-    const createResult = await db.send(new PutItemCommand(params));
-    // Prepare the response body with the result of note creation
-    response.body = JSON.stringify({
-      message: "Successfully created note.",
-      createResult,
-    });
-  } catch (e) {
-    console.error(e); // Prepare the error response in case of failure
-    response.statusCode = 500;
-    response.body = JSON.stringify({
-      message: "Failed to create note.",
-      errorMsg: e.message,
-      errorStack: e.stack,
-    });
-  }
-
-  return response;
-};
-
-// Function to update an existing note
 const updateNote = async (event) => {
   const response = { statusCode: 200 };
 
   try {
-    const body = JSON.parse(event.body);
-    const objKeys = Object.keys(body);
-    const params = {
-      TableName: process.env.DYNAMODB_TABLE_NAME, //table name
-      //The primary key value to identify the note to update
-      Key: marshall({ noteId: event.pathParameters.noteId }),
-      //defines the update operation,
-      //uses string interpolation to generate a SET clause for each attribute to update.
-      UpdateExpression: `SET ${objKeys
-        .map((_, index) => `#key${index} = :value${index}`)
-        .join(", ")}`,
+      const body = JSON.parse(event.body);
+      const objKeys = Object.keys(body);
+      const params = {
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Key: marshall({ noteId: event.pathParameters.noteId }),
+          UpdateExpression: `SET ${objKeys.map((_, index) => `#key${index} = :value${index}`).join(", ")}`,
+          ExpressionAttributeNames: objKeys.reduce((acc, key, index) => ({
+              ...acc,
+              [`#key${index}`]: key,
+          }), {}),
+          ExpressionAttributeValues: marshall(objKeys.reduce((acc, key, index) => ({
+              ...acc,
+              [`:value${index}`]: body[key],
+          }), {})),
+      };
+      const updateResult = await db.send(new UpdateItemCommand(params));
 
-      //mapping of placeholder names (#key) to their corresponding attribute names
-      ExpressionAttributeNames: objKeys.reduce(
-        (acc, key, index) => ({
-          ...acc,
-          [`#key${index}`]: key,
-        }),
-        {}
-      ),
-
-      //mapping of placeholder values (:value) to their corresponding attribute values
-      ExpressionAttributeValues: marshall(
-        objKeys.reduce(
-          (acc, key, index) => ({
-            ...acc,
-            [`:value${index}`]: body[key],
-          }),
-          {}
-        )
-      ),
-    };
-    const updateResult = await db.send(new UpdateItemCommand(params));
-
-    response.body = JSON.stringify({
-      message: "Successfully updated note.",
-      updateResult,
-    });
+      response.body = JSON.stringify({
+          message: "Successfully updated note.",
+          updateResult,
+      });
   } catch (e) {
-    console.error(e);
-    response.statusCode = 500;
-    response.body = JSON.stringify({
-      message: "Failed to update note.",
-      errorMsg: e.message,
-      errorStack: e.stack,
-    });
+      console.error(e);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+          message: "Failed to update note.",
+          errorMsg: e.message,
+          errorStack: e.stack,
+      });
   }
 
   return response;
 };
-
-// const deleteNote = async (event) => {
-//   const response = { statusCode: 200 };
-
-//   try {
-//     const params = {
-//       TableName: process.env.DYNAMODB_TABLE_NAME, //table name
-//       Key: marshall({ noteId: event.pathParameters.noteId }), // The primary key value to identify the note to delete
-//     };
-//     const deleteResult = await db.send(new DeleteItemCommand(params)); // Perform the delete operation in DynamoDB
-
-//     response.body = JSON.stringify({
-//       message: "Successfully deleted note.",
-//       deleteResult, // Result of the delete operation
-//     });
-//   } catch (e) {
-//     console.error(e); // Prepare the error response in case of failure
-//     response.statusCode = 500;
-//     response.body = JSON.stringify({
-//       message: "Failed to delete note.",
-//       errorMsg: e.message,
-//       errorStack: e.stack,
-//     });
-//   }
-
-//   return response;
-// };
 
 const deleteNote = async (event) => {
   const response = { statusCode: 200 };
@@ -160,7 +177,7 @@ const deleteNote = async (event) => {
     const noteId = event.pathParameters.noteId;
     const params = {
       TableName: process.env.DYNAMODB_TABLE_NAME,
-      Key: marshall({ noteId: event.pathParameters.noteId }),// The primary key value to identify the note to delete
+      Key: marshall({ noteId: event.pathParameters.noteId }), // The primary key value to identify the note to delete
     };
 
     // Check if the note exists in the database
@@ -193,8 +210,6 @@ const deleteNote = async (event) => {
 
   return response;
 };
-
-
 
 //Function to scan entire table and fetch all notes
 const getAllNotes = async () => {
