@@ -104,9 +104,8 @@ const getNote = async (event) => {
 
     if (!getResult.Item) {
       // Note does not exist
-      // Note exists, perform the retrival operation
       response.body = JSON.stringify({
-        message: "No note available in the database with ${noteId} id.",
+        message: "No note available in the database with id.",
       });
     } else {
       const { Item } = await db.send(new GetItemCommand(params));
