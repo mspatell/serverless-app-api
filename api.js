@@ -8,7 +8,6 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
-
 // Function to create a new note
 // const createNote = async (event) => {
 // const response = { statusCode: 200 };
@@ -40,7 +39,7 @@ const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
 const createNote = async (event) => {
   const response = { statusCode: 200 };
-
+  console.log("test log for ci/cd pipeline");
   try {
     const body = JSON.parse(event.body);
     const noteId = body.noteId;
@@ -62,7 +61,8 @@ const createNote = async (event) => {
 
     if (getResult.Item) {
       response.body = JSON.stringify({
-        message: "A note with the same noteId already exists. Please create new note with UNIQUE 'noteId'",
+        message:
+          "A note with the same noteId already exists. Please create new note with UNIQUE 'noteId'",
       });
     } else {
       const createResult = await db.send(
