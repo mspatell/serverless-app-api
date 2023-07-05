@@ -49,3 +49,4 @@ follow this doc. https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-starte
 5. Integrate CodeDeploy with GitHub.
 6. Trigger the GitHub Action to build and deploy the code.
 7. Verify the deployment.
+(CI/CD Pipeline Screenshots: https://docs.google.com/document/d/12QuUAsYHHEfhNxsEiyrMQNjSeQbr5_G53H40oJwxPu8/edit?usp=sharing )
