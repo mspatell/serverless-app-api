@@ -1,10 +1,8 @@
 name: Deploy NotesApp CRUD API
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -17,7 +15,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    # Checks-out your repository under $GITHUB_WORKSPACE, so the job can access it
     - uses: actions/checkout@v2
 
     - uses: actions/cache@v2
@@ -25,10 +23,10 @@ jobs:
         path: '**/node_modules'
         key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-    - name: Use Node.js 14.x
+    - name: Use Node.js 20.x
       uses: actions/setup-node@v1
       with:
-        node-version: 14.x
+        node-version: 20.x
 
     - name: Install dependencies
       run: yarn install
