@@ -24,6 +24,7 @@ functions:
       - http:
           path: note/{noteId}
           method: GET
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -38,6 +39,7 @@ functions:
       - http:
           path: note
           method: POST
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -52,6 +54,7 @@ functions:
       - http:
           path: note/{noteId}
           method: PUT
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -66,6 +69,7 @@ functions:
       - http:
           path: note/{noteId}
           method: DELETE
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -80,6 +84,7 @@ functions:
       - http:
           path: notes
           method: GET
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:

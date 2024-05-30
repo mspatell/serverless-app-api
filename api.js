@@ -8,8 +8,13 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
+const headers = {
+  'Access-Control-Allow-Origin': '*', // Allow from any origin
+  'Access-Control-Allow-Credentials': true
+};
+
 const getNote = async (event) => {
-    const response = { statusCode: 200 };
+    const response = { statusCode: 200, headers };
 
     try {
         const params = {
@@ -19,7 +24,6 @@ const getNote = async (event) => {
         const { Item } = await db.send(new GetItemCommand(params));
 
         console.log({ Item });
-        console.log("ci/cd check 2");
         response.body = JSON.stringify({
             message: "Successfully retrieved note.",
             data: (Item) ? unmarshall(Item) : {},
@@ -39,7 +43,7 @@ const getNote = async (event) => {
 };
 
 const createNote = async (event) => {
-    const response = { statusCode: 200 };
+    const response = { statusCode: 200, headers };
 
     try {
         const body = JSON.parse(event.body);
@@ -67,7 +71,7 @@ const createNote = async (event) => {
 };
 
 const updateNote = async (event) => {
-    const response = { statusCode: 200 };
+    const response = { statusCode: 200, headers };
 
     try {
         const body = JSON.parse(event.body);
@@ -105,7 +109,7 @@ const updateNote = async (event) => {
 };
 
 const deleteNote = async (event) => {
-    const response = { statusCode: 200 };
+    const response = { statusCode: 200, headers };
 
     try {
         const params = {
@@ -132,7 +136,7 @@ const deleteNote = async (event) => {
 };
 
 const getAllNotes = async () => {
-    const response = { statusCode: 200 };
+    const response = { statusCode: 200, headers };
 
     try {
         const { Items } = await db.send(new ScanCommand({ TableName: process.env.DYNAMODB_TABLE_NAME }));
