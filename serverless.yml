@@ -2,7 +2,7 @@ service: serverless-notes-app-api-prod
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs20.x
   stage: prod
   region: us-east-1
   environment:
@@ -24,6 +24,7 @@ functions:
       - http:
           path: note/{noteId}
           method: GET
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -38,6 +39,7 @@ functions:
       - http:
           path: note
           method: POST
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -53,6 +55,7 @@ functions:
       - http:
           path: note/{noteId}
           method: PUT
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -68,6 +71,7 @@ functions:
       - http:
           path: note/{noteId}
           method: DELETE
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
@@ -83,6 +87,7 @@ functions:
       - http:
           path: notes
           method: GET
+          cors: true
     iamRoleStatements:
       - Effect: "Allow"
         Action:
