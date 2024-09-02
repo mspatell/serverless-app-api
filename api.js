@@ -10,7 +10,7 @@ const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
 // CORS headers
 const corsHeaders = {
-    'Access-Control-Allow-Origin': '*', // Adjust this to your frontend domain if needed
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
     'Access-Control-Allow-Headers': 'Content-Type',
 };
