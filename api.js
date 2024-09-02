@@ -8,6 +8,24 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
+// CORS headers
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*', // Adjust this to your frontend domain if needed
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
+    'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+// Helper function to add CORS headers
+const addCorsHeaders = (response) => {
+    return {
+        ...response,
+        headers: {
+            ...corsHeaders,
+            ...response.headers,
+        },
+    };
+};
+
 const getNote = async (event) => {
     const response = { statusCode: 200 };
 
@@ -18,8 +36,6 @@ const getNote = async (event) => {
         };
         const { Item } = await db.send(new GetItemCommand(params));
 
-        console.log({ Item });
-        console.log("ci/cd check 2");
         response.body = JSON.stringify({
             message: "Successfully retrieved note.",
             data: (Item) ? unmarshall(Item) : {},
@@ -35,7 +51,7 @@ const getNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const createNote = async (event) => {
@@ -63,7 +79,7 @@ const createNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const updateNote = async (event) => {
@@ -101,7 +117,7 @@ const updateNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const deleteNote = async (event) => {
@@ -128,7 +144,7 @@ const deleteNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const getAllNotes = async () => {
@@ -152,7 +168,7 @@ const getAllNotes = async () => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 module.exports = {
