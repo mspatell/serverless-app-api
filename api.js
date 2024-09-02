@@ -8,9 +8,22 @@ const {
 } = require("@aws-sdk/client-dynamodb");
 const { marshall, unmarshall } = require("@aws-sdk/util-dynamodb");
 
-const headers = {
-  'Access-Control-Allow-Origin': '*', // Allow from any origin
-  'Access-Control-Allow-Credentials': true
+// CORS headers
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',
+    'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+// Helper function to add CORS headers
+const addCorsHeaders = (response) => {
+    return {
+        ...response,
+        headers: {
+            ...corsHeaders,
+            ...response.headers,
+        },
+    };
 };
 
 const getNote = async (event) => {
@@ -39,7 +52,7 @@ const getNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const createNote = async (event) => {
@@ -67,7 +80,7 @@ const createNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const updateNote = async (event) => {
@@ -105,7 +118,7 @@ const updateNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const deleteNote = async (event) => {
@@ -132,7 +145,7 @@ const deleteNote = async (event) => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 const getAllNotes = async () => {
@@ -156,7 +169,7 @@ const getAllNotes = async () => {
         });
     }
 
-    return response;
+    return addCorsHeaders(response);
 };
 
 module.exports = {
