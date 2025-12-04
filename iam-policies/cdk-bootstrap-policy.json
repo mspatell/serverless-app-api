@@ -1,0 +1,29 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:PutParameter"
+            ],
+            "Resource": [
+                "arn:aws:ssm:ca-central-1:*:parameter/cdk-bootstrap/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:*",
+                "s3:*",
+                "iam:*",
+                "lambda:*",
+                "apigateway:*",
+                "dynamodb:*",
+                "logs:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
