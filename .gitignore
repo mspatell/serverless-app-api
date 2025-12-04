@@ -1,6 +1,43 @@
-# package directories
-node_modules
-jspm_packages
+# Dependencies
+node_modules/
+package-lock.json
 
-# Serverless directories
-.serverless
+# TypeScript build output
+src/dist/
+src/*.js
+src/*.js.map
+src/*.d.ts
+src/*.d.ts.map
+
+# CDK output
+infrastructure/cdk.out/
+infrastructure/*.js
+infrastructure/*.js.map
+infrastructure/*.d.ts
+infrastructure/lib/*.js
+infrastructure/lib/*.js.map
+infrastructure/lib/*.d.ts
+infrastructure/bin/*.js
+infrastructure/bin/*.js.map
+infrastructure/bin/*.d.ts
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

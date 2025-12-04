@@ -1,6 +1,8 @@
-# AWS API Gateway CRUD REST API using AWS Lambda, Node.js with AWS-SDK V3
+# AWS Notes API - TypeScript + AWS CDK
 
 ## Serverless Notes App Api by Meetkumar Patel
+
+> **Note**: This branch has been migrated from Node.js + Serverless Framework to TypeScript + AWS CDK. See `README-CDK.md` for detailed setup instructions.
 
 #About this project
 -It has 5 APIs: createNote, getNote, updateNote, deleteNote, getAllNotes
