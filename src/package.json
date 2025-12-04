@@ -1,0 +1,19 @@
+{
+  "name": "notes-api-lambda",
+  "version": "1.0.0",
+  "description": "TypeScript Lambda functions for Notes API",
+  "main": "api.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.18.0",
+    "@aws-sdk/util-dynamodb": "^3.18.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
