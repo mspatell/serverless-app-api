@@ -25,6 +25,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ca-central-1
         
+    - name: Verify AWS user
+      run: |
+        echo "Current AWS user:"
+        aws sts get-caller-identity
+        
     - name: Install Lambda dependencies
       run: |
         cd src
