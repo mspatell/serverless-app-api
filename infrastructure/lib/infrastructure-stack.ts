@@ -22,7 +22,7 @@ export class InfrastructureStack extends cdk.Stack {
     // Lambda Functions
     const lambdaProps = {
       runtime: lambda.Runtime.NODEJS_20_X,
-      code: lambda.Code.fromAsset(path.join(__dirname, '../../src')),
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../src/dist')),
       environment: {
         DYNAMODB_TABLE_NAME: notesTable.tableName,
       },
